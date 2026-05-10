@@ -1,14 +1,14 @@
 import requests
 from bs4 import BeautifulSoup
 from utils import *
-from datetime import datetime as dt
+
 
 
 session = requests.Session()
 
 
 class HabrParser:
-    def parse(self, soup):
+    def parse(self, soup) -> dict:
         finder = soup.find_all("div", class_="vacancy-card__info")
         vacancies = {"vacancy": {}}
         for f in finder:
@@ -37,7 +37,9 @@ class HabrParser:
 
 
 if __name__ == "__main__":
-    response = session.get(url, params=params, headers=headers)
+    time = time_now()
+
+    response = session.get(url, **request_settings)
 
     soup = BeautifulSoup(response.text, "html.parser")
 
@@ -47,4 +49,5 @@ if __name__ == "__main__":
 
     for i in Parser.outputer():
         print(i)
+    print(f"{time} | successful")
 
