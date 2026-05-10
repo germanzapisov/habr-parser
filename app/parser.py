@@ -2,12 +2,11 @@ import requests
 from bs4 import BeautifulSoup
 from utils import *
 
-
-
 session = requests.Session()
 
 
 class HabrParser:
+    @logger_decorator
     def parse(self, soup) -> dict:
         finder = soup.find_all("div", class_="vacancy-card__info")
         vacancies = {"vacancy": {}}
@@ -25,15 +24,18 @@ class HabrParser:
                 if not salary:
                     salary = "----------"
                     vacancies["vacancy"][vacancy.get_text()] = [salary]
+        logger.debug('successful')
         return vacancies
 
+    @logger_decorator
     def outputer(self):
-        data = Parser.parse(soup)
+        data = self.parse(soup)
         for vacancy in data['vacancy'].items():
             yield vacancy
 
-    def writer(self):
-        pass
+    # @logger_decorator
+    # def writer(self):
+    #     pass
 
 
 if __name__ == "__main__":
@@ -46,8 +48,6 @@ if __name__ == "__main__":
     Parser = HabrParser()
     Parser.parse(soup)
 
-
-    for i in Parser.outputer():
-        print(i)
-    print(f"{time} | successful")
-
+    output = Parser.outputer()
+    for vacancy in output:
+        print(vacancy)
